@@ -24,6 +24,7 @@ The default is minibuffer.
 
 Version Info
 ==========
+Originally obtained from: http://www.emacswiki.org/cgi-bin/wiki/ruby-block.el
 
 Tested on Emacs 24.3
 
