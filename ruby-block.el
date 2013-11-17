@@ -1,6 +1,6 @@
 ;;; ruby-block.el --- highlight matching block
 
-;; Copyright (C) 2007-2013  khiker, shishi
+;; Copyright (C) 2007-2013  khiker, shishi, juszczakn
 
 ;; Author: khiker <khiker.mail+elisp@gmail.com>
 ;; Keywords: languages, faces, ruby
