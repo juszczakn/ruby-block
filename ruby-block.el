@@ -169,9 +169,10 @@ This is a minor-mode for ruby-mode and enh-ruby-mode only."
   "Point position's word decides behavior."
   (let* ((cur (current-word))
 		 ;; if point after END, dec point and get face
-		 (p (if (eq nil (get-text-property (point) 'face))
-				(- (point) 1)
-			  (point)))
+		 (p (point))
+		 (p (if (and (eq nil (get-text-property p 'face)) (> p 3))
+				(1- p)
+			  p))
 		 (face (get-text-property p 'face)))
     (when (and (member cur '("else" "elsif" "end"))
 			   (eq face 'font-lock-keyword-face))
