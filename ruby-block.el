@@ -57,12 +57,12 @@
 
 (defconst ruby-block-keyword-list
   (list "end" "for" "while" "until" "if" "class" "module"
-	"case" "unless" "def" "begin" "do")
-  "Keyword for highlighting.")
+		"case" "unless" "def" "begin" "do")
+  "Keywords for highlighting.")
 
 (defconst ruby-block-keyword-regex
   "\\(end\\|for\\|while\\|until\\|if\\|class\\|module\\|case\\|unless\\|def\\|begin\\|do\\)"
-  "Rregular expression to look for correspondence.")
+  "Regular expression to look for correspondence.")
 
 (defgroup ruby-block nil
   "Ruby block"
@@ -80,19 +80,19 @@
   :group 'ruby-block)
 
 (defcustom ruby-block-highlight-toggle 'minibuffer
-  "*How do you display corresponding line.
+  "*How to display corresponding line.
 Default is minibuffer. display to minibuffer.
 
-The possible choice is as follows.
+The choices are as follows.
 
 nil	   => nothing
 minibuffer => minibuffer
 overlay	   => overlay
 t	   => minibuffer and overlay"
-  :type	 '(choice (const :tag "nothing" nil)
-		  (const :tag "minibuffer" minibuffer)
-		  (const :tag "overlay" overlay)
-		  (const :tag "minibuffer and overlay" t))
+  :type  '(choice (const :tag "nothing" nil)
+				  (const :tag "minibuffer" minibuffer)
+				  (const :tag "overlay" overlay)
+				  (const :tag "minibuffer and overlay" t))
   :group 'ruby-block)
 
 (defvar ruby-block-timer nil)
@@ -103,8 +103,9 @@ t	   => minibuffer and overlay"
 ;; Functions:
 
 (define-minor-mode ruby-block-mode
-  "In ruby-mode, Displays the line where there is keyword corresponding
-to END keyword. this is Minor mode for ruby-mode only."
+  "In ruby-mode, Displays the line where there is a keyword corresponding
+to END keyword.
+This is a minor-mode for ruby-mode and enh-ruby-mode only."
   :init-value t
   :global nil
   :keymap nil
@@ -118,10 +119,10 @@ to END keyword. this is Minor mode for ruby-mode only."
   (when ruby-block-timer
     (cancel-timer ruby-block-timer))
   (setq ruby-block-timer
-	(run-with-idle-timer ruby-block-delay t 'ruby-block-hook)))
+		(run-with-idle-timer ruby-block-delay t 'ruby-block-hook)))
 
 (defun ruby-block-stop-timer ()
-  "stop timer."
+  "Stop timer."
   (when ruby-block-timer
     (cancel-timer ruby-block-timer)
     (setq ruby-block-timer nil)))
@@ -130,10 +131,10 @@ to END keyword. this is Minor mode for ruby-mode only."
   "When Major-mode is ruby-mode or enh-ruby-mode, this package is running."
   (if (or (eq major-mode 'ruby-mode) (eq major-mode 'enh-ruby-mode))
       (condition-case err
-	  (ruby-block-function)
-	(error
-	 (setq ruby-block-mode nil)
-	 (message "Error: %S; ruby-block-mode now disabled." err)))
+		  (ruby-block-function)
+		(error
+		 (setq ruby-block-mode nil)
+		 (message "Error: %S; ruby-block-mode now disabled." err)))
     (setq ruby-block-mode nil)))
 
 (defun ruby-block-line-beginning-position (pos)
@@ -141,36 +142,37 @@ to END keyword. this is Minor mode for ruby-mode only."
     (save-excursion
       (goto-char pos)
       (let ((xor '(lambda (a b) (and (or a b) (not (and a b)))))
-	    (pos (point))
-	    (count 0))
-	(while (and (not (funcall xor (bobp) (eolp)))
-		    (> pos (point-min)))
-	  (setq pos (1- pos))
-	  (goto-char (1- (point))))
-	;; delete linefeed of start point.
-	(when (and (eolp) (>= (point-max) (1+ pos)))
-	  (setq pos (1+ pos)))
-	pos))))
+			(pos (point))
+			(count 0))
+		(while (and (not (funcall xor (bobp) (eolp)))
+					(> pos (point-min)))
+		  (setq pos (1- pos))
+		  (goto-char (1- (point))))
+		;; delete linefeed of start point.
+		(when (and (eolp) (>= (point-max) (1+ pos)))
+		  (setq pos (1+ pos)))
+		pos))))
 
 (defun ruby-block-line-end-position (pos)
   (when pos
     (save-excursion
       (goto-char pos)
       (let ((xor '(lambda (a b) (and (or a b) (not (and a b)))))
-	    (pos (point)))
-	(while (and (not (funcall xor (eobp) (eolp)))
-		    (>= (point-max) pos))
-	  (setq pos (1+ pos))
-	  (goto-char (1+ (point))))
-	pos))))
+			(pos (point)))
+		(while (and (not (funcall xor (eobp) (eolp)))
+					(>= (point-max) pos))
+		  (setq pos (1+ pos))
+		  (goto-char (1+ (point))))
+		pos))))
 
 (defun ruby-block-function ()
   "Point position's word decides behavior."
   (let* ((cur (current-word))
-		(p (if (eq nil (get-text-property (point) 'face))
-			   (- (point) 1)
-			 (point)))
-		(face (get-text-property p 'face)))
+		 ;; if point after END, dec point and get face
+		 (p (if (eq nil (get-text-property (point) 'face))
+				(- (point) 1)
+			  (point)))
+		 (face (get-text-property p 'face)))
     (when (and (member cur '("else" "elsif" "end"))
 			   (eq face 'font-lock-keyword-face))
       (let* ((pos (ruby-block-corresponding-position p))
@@ -190,18 +192,18 @@ to END keyword. this is Minor mode for ruby-mode only."
     (goto-char pos)
     (let ((status 'skip))
       (while (and (not (bolp))
-		  (eq status 'skip))
-	(forward-char -1)
-	(let ((ch (char-after)))
-	  (cond
-	   ((memq ch '(?\n ?\r ?\())
-	    (setq status t))
-	   ((memq ch '(32 \t))
-	    (setq status 'skip))
-	   (t
-	    (setq status nil)))))
+				  (eq status 'skip))
+		(forward-char -1)
+		(let ((ch (char-after)))
+		  (cond
+		   ((memq ch '(?\n ?\r ?\())
+			(setq status t))
+		   ((memq ch '(32 \t))
+			(setq status 'skip))
+		   (t
+			(setq status nil)))))
       (when (eq status 'skip)
-	(setq status t))
+		(setq status t))
       status)))
 
 (defun ruby-block-corresponding-position (pos)
@@ -236,7 +238,7 @@ to END keyword. this is Minor mode for ruby-mode only."
       (move-overlay  ruby-block-highlight-overlay beg end)
     (setq ruby-block-highlight-overlay (make-overlay beg end)))
   (overlay-put ruby-block-highlight-overlay
-	       'face ruby-block-highlight-face)
+			   'face ruby-block-highlight-face)
   (add-hook 'pre-command-hook 'ruby-block-highlight-done))
 
 (defun ruby-block-highlight-done ()
