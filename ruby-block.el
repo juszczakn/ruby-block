@@ -1,6 +1,6 @@
 ;;; ruby-block.el --- highlight matching block
 
-;; Copyright (C) 2007-2013  khiker, shishi, juszczakn
+;; Copyright (C) 2007-2013 khiker, shishi, juszczakn
 
 ;; Author: khiker <khiker.mail+elisp@gmail.com>
 ;; Keywords: languages, faces, ruby
@@ -12,11 +12,11 @@
 
 ;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.         See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.	If not, write to
+;; along with GNU Emacs; see the file COPYING.        If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
 
@@ -71,12 +71,12 @@
 
 (defcustom ruby-block-delay 0.50
   "*Time in seconds to delay before showing a matching paren."
-  :type	 'number
+  :type         'number
   :group 'ruby-block)
 
 (defcustom ruby-block-highlight-face 'highlight
   "*Face for block highlighting."
-  :type	 'face
+  :type         'face
   :group 'ruby-block)
 
 (defcustom ruby-block-highlight-toggle 'minibuffer
@@ -85,14 +85,14 @@ Default is minibuffer. display to minibuffer.
 
 The choices are as follows.
 
-nil	   => nothing
+nil         => nothing
 minibuffer => minibuffer
-overlay	   => overlay
-t	   => minibuffer and overlay"
-  :type  '(choice (const :tag "nothing" nil)
-				  (const :tag "minibuffer" minibuffer)
-				  (const :tag "overlay" overlay)
-				  (const :tag "minibuffer and overlay" t))
+overlay         => overlay
+t         => minibuffer and overlay"
+  :type '(choice (const :tag "nothing" nil)
+				 (const :tag "minibuffer" minibuffer)
+				 (const :tag "overlay" overlay)
+				 (const :tag "minibuffer and overlay" t))
   :group 'ruby-block)
 
 (defvar ruby-block-timer nil)
@@ -170,15 +170,15 @@ This is a minor-mode for ruby-mode and enh-ruby-mode only."
   (let* ((cur (current-word))
 		 ;; if point after END, dec point and get face
 		 (p (point))
-		 (p (if (and (eq nil (get-text-property p 'face)) (> p 3))
+		 (face (get-text-property p 'face))
+		 (p (if (and (eq nil face) (> p 3))
 				(1- p)
-			  p))
-		 (face (get-text-property p 'face)))
+			  p)))
     (when (and (member cur '("else" "elsif" "end"))
 			   (eq face 'font-lock-keyword-face))
       (let* ((pos (ruby-block-corresponding-position p))
-			 (sp  (ruby-block-line-beginning-position pos))
-			 (ep  (ruby-block-line-end-position pos)))
+			 (sp (ruby-block-line-beginning-position pos))
+			 (ep (ruby-block-line-end-position pos)))
 		(when pos
 		  ;; display line contents to minibuffer
 		  (when (memq ruby-block-highlight-toggle '(t minibuffer))
@@ -236,7 +236,7 @@ This is a minor-mode for ruby-mode and enh-ruby-mode only."
 (defun ruby-block-do-highlight (beg end)
   "Do overlay corresponding line."
   (if ruby-block-highlight-overlay
-      (move-overlay  ruby-block-highlight-overlay beg end)
+      (move-overlay ruby-block-highlight-overlay beg end)
     (setq ruby-block-highlight-overlay (make-overlay beg end)))
   (overlay-put ruby-block-highlight-overlay
 			   'face ruby-block-highlight-face)
